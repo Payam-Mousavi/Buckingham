@@ -1,7 +1,7 @@
 {
     "python.pythonPath": "C:\\Users\\pa006711\\Anaconda3\\envs\\buckingham\\python.exe",
     "[json]": {
-
+        
         "editor.quickSuggestions": {
             "strings": true
         },
@@ -12,4 +12,6 @@
       "/K, C:\\Users\\pa006711\\Desktop\\cmder\\vendor\\bin\\vscode_init.cmd"
     ],
     "cmder-here.cmderLocation": "C:\\Users\\pa006711\\Desktop\\cmder/Cmder.exe",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
 }

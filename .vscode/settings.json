@@ -14,4 +14,5 @@
     "cmder-here.cmderLocation": "C:\\Users\\pa006711\\Desktop\\cmder/Cmder.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
+    "julia.environmentPath": "/Users/Payam/Documents/Personal/Projects/pi_buckingham/Buckingham",
 }

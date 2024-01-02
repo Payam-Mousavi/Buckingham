@@ -1,2 +1,5 @@
 *.npy
+*.ipynb_checkpoints
+runs/
+.DS_Store
 

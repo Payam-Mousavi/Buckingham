@@ -4,25 +4,6 @@ import numpy as np
 from torch.utils.data import DataLoader
 
 
-# def predict_model(model_path, dataset):
-#     # Load the entire model
-#     model = torch.load(model_path)
-#     model.eval()
-
-#     test_inputs = []
-#     for i in range(len(dataset)):
-#         input, _ = dataset[i]
-#         test_inputs.append(input)
-
-#     test_inputs = torch.tensor(np.stack(test_inputs), dtype=torch.float32)
-
-#     with torch.no_grad():
-#         predictions = model(test_inputs).squeeze().numpy()
-        
-
-#     return predictions
-
-
 def predict_model(model_path, dataset):
     model = torch.load(model_path)
     model.eval()

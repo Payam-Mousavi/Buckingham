@@ -89,6 +89,17 @@ def sample_parameters(num_samples=100000, Re_range=[1e2, 3e7], rho_range=[500, 3
 
     return rho, mu, D, U, Re_vec, CD
 
+def sample_re(num_samples, Re_range, seed=None):
+    if seed is not None:
+        np.random.seed(seed)
+    Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
+    CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
+    return Re_vec, CD
+
+
+# Used for verifying results later:    
+def extract_Re_values(dataset, subset):
+    return [dataset.Re[idx] for idx in subset.indices]
 
 class RandomDataset(Dataset):
     def __init__(self, num_samples=100000, Re_range= [1e2, 3e7] ,rho_range=[100, 2000], mu_range=[0.001, 0.01], D_range=[0.05, 0.5], U_range=[0.1, 20], seed=None):
@@ -104,6 +115,17 @@ class RandomDataset(Dataset):
         target = np.array([self.CD[idx]], dtype=np.float32)
         return input_sample, target
 
-# Used for verifying results later:    
-def extract_Re_values(dataset, subset):
-    return [dataset.Re[idx] for idx in subset.indices]
+
+class RandomDataset_Re(Dataset):
+    def __init__(self, num_samples, Re_range, seed=None):
+        np.random.seed(seed)
+        self.Re, self.CD = sample_re(num_samples=num_samples, Re_range=Re_range, seed=seed)
+        self.num_samples = num_samples
+
+    def __len__(self):
+        return self.num_samples
+
+    def __getitem__(self, idx):
+        input_sample = np.array([self.Re[idx]], dtype=np.float32)
+        target = np.array([self.CD[idx]], dtype=np.float32)
+        return input_sample, target

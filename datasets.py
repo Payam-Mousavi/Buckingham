@@ -117,10 +117,11 @@ class RandomDataset(Dataset):
 
 
 class RandomDataset_Re(Dataset):
-    def __init__(self, num_samples, Re_range, seed=None):
+    def __init__(self, num_samples, Re_range, re_scaling=1, seed=None):
         np.random.seed(seed)
         self.Re, self.CD = sample_re(num_samples=num_samples, Re_range=Re_range, seed=seed)
         self.num_samples = num_samples
+        self.Re = self.Re / re_scaling
 
     def __len__(self):
         return self.num_samples

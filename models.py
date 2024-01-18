@@ -33,13 +33,13 @@ class Model_0(nn.Module):
         self.layers = nn.ModuleList()
         for i in range(len(hidden_dims) - 1):
             layer = nn.Linear(hidden_dims[i], hidden_dims[i+1])
-            # init.kaiming_uniform_(layer.weight, nonlinearity='leaky_relu')
+            init.kaiming_uniform_(layer.weight, nonlinearity='leaky_relu')
             self.layers.append(layer)
 
     def forward(self, x):
         for i in range(len(self.layers) - 1):
-            # x = F.leaky_relu(self.layers[i](x), 0.1)
-            x = torch.tanh(self.layers[i](x))
+            x = F.leaky_relu(self.layers[i](x), 0.1)
+            # x = torch.tanh(self.layers[i](x))
         x = self.layers[-1](x)  # Apply the last layer without ReLU
         x = F.softplus(x)
         return x

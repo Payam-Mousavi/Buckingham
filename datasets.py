@@ -102,7 +102,6 @@ def sample_re(num_samples, Re_range, seed=None):
     CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
     return Re_vec, CD
 
-
 # Used for verifying results later:    
 def extract_Re_values(dataset, subset):
     return [dataset.Re[idx] for idx in subset.indices]
@@ -137,6 +136,7 @@ class RandomDataset_scaled(Dataset):
                  D_range=[0.05, 0.5], 
                  U_range=[0.1, 20], 
                  seed=None):
+        np.random.seed(seed)
         self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters(num_samples=num_samples, 
                                                                                 Re_range=Re_range, 
                                                                                 rho_range=rho_range, 

@@ -11,7 +11,7 @@ def eval_model(dataset, model_path, visualize=False):
     for re, _ in dataset:
         Re_vec.append(re.item())
     Re_vec = np.array(Re_vec)
-
+    # Re_vec = dataset.Re #TODO: check if this works
 
     ground_truths = [target for _, target in dataset]
     predictions = predict_model(model_path=model_path, dataset=dataset)

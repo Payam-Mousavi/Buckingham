@@ -22,12 +22,12 @@ eps = 1e-12
 
 
 # Data Generation:
-# Let's first generate random samples of rho, mu, D, and U. The true label is then calculated using the run_experiments function. 
+# Let's first generate random samples of rho, mu, D, and U. The true label is then calculated using the run_experiments function.
 # The Reynolds numbers are also calculated and returned as a vector for convenience.
-def sample_parameters_naive(num_samples=100000, Re_range = None, rho_range=[500, 3000], mu_range=[0.3e-3, 0.1], D_range=[0.05, 1], U_range=[1, 10], seed=123):
+def sample_parameters_naive(num_samples=100000, Re_range=None, rho_range=[500, 3000], mu_range=[0.3e-3, 0.1], D_range=[0.05, 1], U_range=[1, 10], seed=123):
     if seed is not None:
         np.random.seed(seed)
-        
+
     rho = np.random.uniform(rho_range[0], rho_range[1], num_samples)
     mu = np.random.uniform(mu_range[0], mu_range[1], num_samples)
     D = np.random.uniform(D_range[0], D_range[1], num_samples)
@@ -38,12 +38,13 @@ def sample_parameters_naive(num_samples=100000, Re_range = None, rho_range=[500,
     Re_vec = rho * U * D / mu
     return rho, mu, D, U, Re_vec, CD
 
-def sample_parameters(num_samples=100000, 
-                      Re_range=[1e2, 3e7], 
-                      rho_range=[500, 3000], 
-                      mu_range=[0.3e-3, 0.1], 
-                      D_range=[0.05, 1], 
-                      U_range=[1, 10], 
+
+def sample_parameters(num_samples=100000,
+                      Re_range=[1e2, 3e7],
+                      rho_range=[500, 3000],
+                      mu_range=[0.3e-3, 0.1],
+                      D_range=[0.05, 1],
+                      U_range=[1, 10],
                       seed=123):
     if seed is not None:
         np.random.seed(seed)
@@ -54,9 +55,9 @@ def sample_parameters(num_samples=100000,
     U = np.zeros(num_samples)
 
     # Step 1: Uniformly sample Re
-    # Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
+    Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
     # Sample uniformly in log space
-    Re_vec = np.exp(np.random.uniform(np.log(Re_range[0]), np.log(Re_range[1]), num_samples))
+    # Re_vec = np.exp(np.random.uniform(np.log(Re_range[0]), np.log(Re_range[1]), num_samples))
 
     # Parameters to choose from
     param_choices = ['rho', 'mu', 'D', 'U']
@@ -95,6 +96,7 @@ def sample_parameters(num_samples=100000,
 
     return rho, mu, D, U, Re_vec, CD
 
+
 def sample_re(num_samples, Re_range, seed=None):
     if seed is not None:
         np.random.seed(seed)
@@ -102,19 +104,23 @@ def sample_re(num_samples, Re_range, seed=None):
     CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
     return Re_vec, CD
 
-# Used for verifying results later:    
+# Used for verifying results later:
+
+
 def extract_Re_values(dataset, subset):
     return [dataset.Re[idx] for idx in subset.indices]
 
+
 class RandomDataset(Dataset):
-    def __init__(self, num_samples=100000, 
-                 Re_range= [1e2, 3e7] ,
-                 rho_range=[100, 2000], 
-                 mu_range=[0.001, 0.01], 
-                 D_range=[0.05, 0.5], 
-                 U_range=[0.1, 20], 
+    def __init__(self, num_samples=100000,
+                 Re_range=[1e2, 3e7],
+                 rho_range=[100, 2000],
+                 mu_range=[0.001, 0.01],
+                 D_range=[0.05, 0.5],
+                 U_range=[0.1, 20],
                  seed=None):
-        self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters(num_samples=num_samples, Re_range=Re_range, rho_range=rho_range, mu_range=mu_range, D_range=D_range, U_range=U_range, seed=seed)
+        self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters(
+            num_samples=num_samples, Re_range=Re_range, rho_range=rho_range, mu_range=mu_range, D_range=D_range, U_range=U_range, seed=seed)
         # self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters_naive(num_samples=num_samples, Re_range=None, rho_range=rho_range, mu_range=mu_range, D_range=D_range, U_range=U_range, seed=seed)
         self.num_samples = num_samples
 
@@ -128,22 +134,38 @@ class RandomDataset(Dataset):
 
 
 class RandomDataset_scaled(Dataset):
-    def __init__(self, num_samples=100000, 
-                 parms_scaling=[1e3, 1e-2, 1, 1], # divide rho, mu, D, U by these values
-                 Re_range= [1e2, 3e7] ,
-                 rho_range=[100, 2000], 
-                 mu_range=[0.001, 0.01], 
-                 D_range=[0.05, 0.5], 
-                 U_range=[0.1, 20], 
+    def __init__(self, num_samples=100000,
+                 parms_scaling=[1e3, 1e-2, 1, 1],  # divide rho, mu, D, U by these values
+                 Re_range=[1e2, 3e7],
+                 rho_range=[100, 2000],
+                 mu_range=[0.001, 0.01],
+                 D_range=[0.05, 0.5],
+                 U_range=[0.1, 20],
                  seed=None):
         np.random.seed(seed)
-        self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters(num_samples=num_samples, 
-                                                                                Re_range=Re_range, 
-                                                                                rho_range=rho_range, 
-                                                                                mu_range=mu_range, 
-                                                                                D_range=D_range, 
-                                                                                U_range=U_range, 
+
+        # min_Re = rho_range[0] * U_range[0] * D_range[0] / mu_range[1]
+        # max_Re = rho_range[1] * U_range[1] * D_range[1] / mu_range[0]
+        # print(f"min_Re: {min_Re:.2e}, max_Re: {max_Re:.2e}")
+
+        # # re-scale ranges:
+        # rho_range = np.array(rho_range) / parms_scaling[0]
+        # mu_range = np.array(mu_range) / parms_scaling[1]
+        # D_range = np.array(D_range) / parms_scaling[2]
+        # U_range = np.array(U_range) / parms_scaling[3]
+
+        # Re_scaling = parms_scaling[0] * parms_scaling[2] * parms_scaling[3] / parms_scaling[1]
+        # Re_range = np.array(Re_range) / Re_scaling  # scale Re range
+
+
+        self.rho, self.mu, self.D, self.U, self.Re, self.CD = sample_parameters(num_samples=num_samples,
+                                                                                Re_range=Re_range,
+                                                                                rho_range=rho_range,
+                                                                                mu_range=mu_range,
+                                                                                D_range=D_range,
+                                                                                U_range=U_range,
                                                                                 seed=seed)
+        
         self.rho = self.rho / parms_scaling[0]
         self.mu = self.mu / parms_scaling[1]
         self.D = self.D / parms_scaling[2]
@@ -160,6 +182,7 @@ class RandomDataset_scaled(Dataset):
         input_sample = np.array([self.rho[idx], self.mu[idx], self.D[idx], self.U[idx]], dtype=np.float32)
         target = np.array([self.CD[idx]], dtype=np.float32)
         return input_sample, target
+
 
 class RandomDataset_Re(Dataset):
     def __init__(self, num_samples, Re_range, re_scaling=1, seed=None):

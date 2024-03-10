@@ -94,74 +94,9 @@ def sample_parameters(num_samples=100000,
         elif 'U' not in sampled_params:
             U[i] = Re_vec[i] * mu[i] / (rho[i] * D[i])
             
-        # # Check if the calculated values are within the specified ranges
-        # if (rho_range[0] <= rho[i] <= rho_range[1] and
-        #     mu_range[0] <= mu[i] <= mu_range[1] and
-        #     D_range[0] <= D[i] <= D_range[1] and
-        #     U_range[0] <= U[i] <= U_range[1]):
-        #     break  # Exit the loop if all values are within the ranges
-    
-    # Step 5: Calculate the true CD using the run_experiments function
     CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
     
     return rho, mu, D, U, Re_vec, CD
-
-# def sample_parameters(num_samples=100000,
-#                       Re_range=[1e2, 3e7],
-#                       rho_range=[500, 3000],
-#                       mu_range=[0.3e-3, 0.1],
-#                       D_range=[0.05, 1],
-#                       U_range=[1, 10],
-#                       seed=123):
-#     if seed is not None:
-#         np.random.seed(seed)
-
-#     rho = np.zeros(num_samples)
-#     mu = np.zeros(num_samples)
-#     D = np.zeros(num_samples)
-#     U = np.zeros(num_samples)
-
-#     # Step 1: Uniformly sample Re
-#     Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
-#     # Sample uniformly in log space
-#     # Re_vec = np.exp(np.random.uniform(np.log(Re_range[0]), np.log(Re_range[1]), num_samples))
-
-#     # Parameters to choose from
-#     param_choices = ['rho', 'mu', 'D', 'U']
-
-#     for i in range(num_samples):
-#         # Step 2: Randomly choose which 3 parameters to sample
-#         sampled_params = np.random.choice(param_choices, 3, replace=False)
-
-#         if 'rho' in sampled_params:
-#             rho[i] = np.random.uniform(rho_range[0], rho_range[1])
-#         if 'mu' in sampled_params:
-#             mu[i] = np.random.uniform(mu_range[0], mu_range[1])
-#         if 'D' in sampled_params:
-#             D[i] = np.random.uniform(D_range[0], D_range[1])
-#         if 'U' in sampled_params:
-#             U[i] = np.random.uniform(U_range[0], U_range[1])
-
-#         # Step 3: Calculate the fourth parameter
-#         if 'rho' not in sampled_params:
-#             rho[i] = Re_vec[i] * mu[i] / (U[i] * D[i])
-#         elif 'mu' not in sampled_params:
-#             mu[i] = (rho[i] * U[i] * D[i]) / Re_vec[i]
-#         elif 'D' not in sampled_params:
-#             D[i] = Re_vec[i] * mu[i] / (rho[i] * U[i])
-#         elif 'U' not in sampled_params:
-#             U[i] = Re_vec[i] * mu[i] / (rho[i] * D[i])
-
-#         # Step 4: Validate and adjust
-#         rho[i] = np.clip(rho[i], rho_range[0], rho_range[1])
-#         mu[i] = np.clip(mu[i], mu_range[0], mu_range[1])
-#         D[i] = np.clip(D[i], D_range[0], D_range[1])
-#         U[i] = np.clip(U[i], U_range[0], U_range[1])
-
-#     # Step 5: Calculate the true CD using the run_experiments function
-#     CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
-
-#     return rho, mu, D, U, Re_vec, CD
 
 
 def sample_re(num_samples, Re_range, seed=None):

@@ -61,7 +61,7 @@ def eval_model(dataset_subset, model_path, visualize=False):
         plt.scatter(Re_vec, ground_truths, color='blue', label='CD True', marker='o', alpha=0.3)
         plt.xscale('log')
         plt.yscale('log')
-        plt.xlabel('Reynolds Number (/1E6)')
+        plt.xlabel('Reynolds Number (/1E5)')
         plt.ylabel('Drag Coefficient (CD)')
         plt.title('Comparison of True and Predicted CD values')
         plt.legend()

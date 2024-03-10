@@ -22,6 +22,7 @@ class Model_II(nn.Module):
             x = F.leaky_relu(self.layers[i](x), 0.1)
             # x = torch.tanh(self.layers[i](x))
         x = self.layers[-1](x)  # Apply the last layer without ReLU
+        x = F.softplus(x) #TODO: check this?
         return x
     
 class Model_0(nn.Module):

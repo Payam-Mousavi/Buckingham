@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-def train_model(model, train_loader, val_loader, test_loader, optimizer, criterion, num_epochs, model_save_path, writer_path, figure_path):
+def train_model(model, train_loader, val_loader, test_loader, optimizer, criterion, num_epochs, model_save_path, writer_path):
     best_val_loss = float('inf')
     best_model = None
     writer = SummaryWriter(writer_path)
@@ -73,15 +73,5 @@ def train_model(model, train_loader, val_loader, test_loader, optimizer, criteri
         torch.save(best_model, model_save_path)
     writer.close()
 
-    # plot the training and validation loss
-    epochs = range(1, len(history['train_loss']) + 1)
-    plt.plot(epochs, history['train_loss'], label='Training Loss')
-    plt.plot(epochs, history['val_loss'], label='Validation Loss')
-    plt.title('Loss as a Function of Epochs')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.savefig(figure_path, dpi=300, bbox_inches='tight')
-    plt.show()
 
     return best_model, history

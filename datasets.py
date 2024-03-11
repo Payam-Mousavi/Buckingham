@@ -54,7 +54,14 @@ def sample_parameters(num_samples=100000,
     U = np.zeros(num_samples)
     
     # Step 1: Uniformly sample Re
-    Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
+
+    # Sampling in the log space:
+    log_Re_vec = np.random.uniform(np.log10(Re_range[0]), np.log10(Re_range[1]), num_samples)
+    Re_vec = np.power(10, log_Re_vec)
+
+    # Sampling in the linear space:
+    # Re_vec = np.random.uniform(Re_range[0], Re_range[1], num_samples)
+    
     
     # Parameters to choose from
     param_choices = ['rho', 'mu', 'D', 'U']
@@ -97,7 +104,6 @@ def sample_parameters(num_samples=100000,
     CD, _ = run_experiments(Re_vec=Re_vec, velocities=None, diameters=None, densities=None, viscosities=None)
     
     return rho, mu, D, U, Re_vec, CD
-
 
 def sample_re(num_samples, Re_range, seed=None):
     if seed is not None:

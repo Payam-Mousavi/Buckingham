@@ -28,10 +28,22 @@ def sample_parameters_naive(num_samples=100000, Re_range=None, rho_range=[500, 3
     if seed is not None:
         np.random.seed(seed)
 
-    rho = np.random.uniform(rho_range[0], rho_range[1], num_samples)
-    mu = np.random.uniform(mu_range[0], mu_range[1], num_samples)
-    D = np.random.uniform(D_range[0], D_range[1], num_samples)
-    U = np.random.uniform(U_range[0], U_range[1], num_samples)
+    # rho = np.random.uniform(rho_range[0], rho_range[1], num_samples)
+    # mu = np.random.uniform(mu_range[0], mu_range[1], num_samples)
+    # D = np.random.uniform(D_range[0], D_range[1], num_samples)
+    # U = np.random.uniform(U_range[0], U_range[1], num_samples)
+
+    # Sampling in log space:
+    log_rho = np.random.uniform(np.log10(rho_range[0]), np.log10(rho_range[1]), num_samples)
+    log_mu = np.random.uniform(np.log10(mu_range[0]), np.log10(mu_range[1]), num_samples)
+    log_D = np.random.uniform(np.log10(D_range[0]), np.log10(D_range[1]), num_samples)
+    log_U = np.random.uniform(np.log10(U_range[0]), np.log10(U_range[1]), num_samples)
+
+    rho = np.power(10, log_rho)
+    mu = np.power(10, log_mu)
+    D = np.power(10, log_D)
+    U = np.power(10, log_U)
+
 
     # Calculate the true CD and FD:
     CD, _ = run_experiments(Re_vec=None, velocities=U, diameters=D, densities=rho, viscosities=mu)

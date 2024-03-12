@@ -24,6 +24,37 @@ class Model_II(nn.Module):
         x = self.layers[-1](x)  # Apply the last layer without ReLU
         x = F.softplus(x) #TODO: check this?
         return x
+
+# Model_I
+class Model_I(nn.Module):
+    def __init__(self, input_dim=4, output_dim=1, hidden_dims=[32, 16, 8, 4, 1, 64, 32, 16, 8, 4]):
+        super(Model_I, self).__init__()
+        hidden_dims.insert(0, input_dim)  # Input dimension at the beginning
+        hidden_dims.append(output_dim)  # Output dimension at the end
+        self.layers = nn.ModuleList()
+        self.output_sizes = hidden_dims[1:]  # Adjusted to track output sizes directly from hidden_dims
+        for i in range(len(hidden_dims) - 1):
+            layer = nn.Linear(hidden_dims[i], hidden_dims[i + 1])
+            init.kaiming_uniform_(layer.weight, nonlinearity='leaky_relu')
+            self.layers.append(layer)
+
+    def forward(self, x, return_intermediate=False):
+        intermediate_output = None
+        for i, layer in enumerate(self.layers):
+            x = layer(x)
+            if i < len(self.layers) - 1:  # Apply Leaky ReLU for all but last layer
+                x = F.leaky_relu(x, 0.1)
+                if return_intermediate and self.output_sizes[i] == 1:
+                    # Update intermediate_output only for layers before the final layer
+                    intermediate_output = x
+            else:
+                # For the last layer, apply softplus without updating intermediate_output
+                x = F.softplus(x)
+
+        if return_intermediate and intermediate_output is not None:
+            return x, intermediate_output
+        else:
+            return x
     
 class Model_0(nn.Module):
     def __init__(self, input_dim=1 , output_dim= 1, hidden_dims=[32, 16, 8, 4]):

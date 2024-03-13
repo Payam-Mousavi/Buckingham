@@ -8,23 +8,18 @@ import numpy as np
 
 matplotlib.rcParams.update({'font.size': 18})
 
-
 BIN_SIZE = 500
 SCALE_FACTOR = 100
-SAMPLING_METHOD = "uniform-Re" # "unform-Re" OR "uniform-4"
+SAMPLING_METHOD = "uniform-4"  # "uniform-Re" OR "uniform-4"
 
-def update(frame, bins, bin_counts, scatter_dict, hist):
+def update(frame, bins, bin_counts, scatter_dict, hist, ax, num_samples):
     rho_range = [200, 3000]
     mu_range = [0.6e-2, 1]
     D_range = [0.5, 1]
     U_range = [10, 20]
     
-    if SAMPLING_METHOD == "uniform-4":
-         # Sample uniformly from 4 input parameters
-        # rho = np.random.uniform(rho_range[0], rho_range[1])
-        # U = np.random.uniform(U_range[0], U_range[1])
-        # D = np.random.uniform(D_range[0], D_range[1])
-        # mu = np.random.uniform(mu_range[0], mu_range[1])
+    if SAMPLING_METHOD == "uniform-4": 
+        # Sample uniformly from 4 input parameters
         log_rho = np.random.uniform(np.log10(rho_range[0]), np.log10(rho_range[1]))
         log_U = np.random.uniform(np.log10(U_range[0]), np.log10(U_range[1]))
         log_D = np.random.uniform(np.log10(D_range[0]), np.log10(D_range[1]))
@@ -39,7 +34,6 @@ def update(frame, bins, bin_counts, scatter_dict, hist):
         Re = (rho * U * D) / mu
     elif SAMPLING_METHOD == "uniform-Re":
         # Sample uniformly from Re
-        # Re = np.random.uniform(1e3, 1e7)
         log_Re = np.random.uniform(3, 7)
         Re = np.power(10, log_Re)
     else: 
@@ -65,24 +59,21 @@ def update(frame, bins, bin_counts, scatter_dict, hist):
     hist.set_data(bins[:-1], bin_counts)
     ax_hist.set_ylim(0, max(bin_counts) * 1.1)  # Adjust the upper limit as needed
 
-
+    # Update title with sampling efficiency
     repetitive_sampled_bins = bin_counts[bin_counts > 1]
     excess_samples = np.sum(repetitive_sampled_bins - 1)
     sampling_efficiency = 1 - (excess_samples / num_samples)
-    # print(f"Sampling Efficiency: {sampling_efficiency * 100:.2f}%")
-
-    ax.set_title(f"Sample Count: {frame + 1}/{num_samples}, Sampling Efficiency: {sampling_efficiency * 100:.2f}%")
+    ax.set_title(f"Sample Count: {frame + 1}/{num_samples}") # Sampling Efficiency: {sampling_efficiency * 100:.2f}%")
     
     return list(scatter_dict.values()) + [hist]
 
 if __name__ == "__main__":
     fig = plt.figure(figsize=(12, 8))  # Adjust the figure size as needed
-    plt.clf()
+    # plt.clf()
     ax = fig.add_subplot(211)
     ax.set_xlim(1e3, 1e7)  # Adjust the x-axis range as needed
     ax.set_ylim(0.1e-1, 6e-1)  # Adjust the y-axis range as needed
     ax.set_xscale('log')
-    # ax.set_xlabel('Re')
     ax.set_ylabel('CD')
     
     # Create bins and initialize bin counts
@@ -109,20 +100,21 @@ if __name__ == "__main__":
     hist, = ax_hist.plot(bins[:-1], bin_counts, drawstyle='steps-post')
     ax_hist.axhline(y=1.01, color='r', linestyle='--', linewidth=2)
     
-    # Create the animation
+    # Create the animation with combined update function
     num_samples = 200  # Total number of samples to be drawn
-    animation = FuncAnimation(fig, update, frames=num_samples, fargs=(bins, bin_counts, scatter_dict, hist),
-                              interval=100, repeat=False)
-  
+    animation = FuncAnimation(fig, update, frames=num_samples, fargs=(bins, bin_counts, scatter_dict, hist, ax, num_samples),
+                              interval=50, repeat=False)
+    
     file_path = f"Figures/sampling_{SAMPLING_METHOD}.mp4"
     animation.save(file_path, writer="ffmpeg", fps=10)
-
+    
     plt.tight_layout()  # Adjust the spacing between subplots
     plt.show()
 
-    # Calculating and printing sampling efficiency:
+     # Calculating and printing sampling efficiency:
     repetitive_sampled_bins = bin_counts[bin_counts > 1]
     excess_samples = np.sum(repetitive_sampled_bins - 1)
     print(f"Excess Samples: {excess_samples}")
     sampling_efficiency = 1 - (excess_samples / num_samples)
     print(f"Sampling Efficiency: {sampling_efficiency * 100:.2f}%")
+
